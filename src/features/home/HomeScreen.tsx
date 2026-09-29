@@ -1,15 +1,18 @@
-
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
     colors,
+    fonts,
     radius,
     spacing,
     typography,
 } from '../../constants/theme';
 
 import BottomNav from '../../components/navigation/BottomNav';
+import ProductCard from '../products/components/ProductCard';
+import { products } from '../products/data/products';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
 
@@ -26,19 +29,20 @@ export default function HomeScreen() {
                     <Text style={styles.logo}>Velora</Text>
 
                     <View style={styles.headerActions}>
-                        <Text style={styles.icon}>♡</Text>
-                        <Text style={styles.icon}>◯</Text>
+                        <Feather name="heart" size={22} color={colors.text} />
+                        <Feather name="user" size={22} color={colors.text} />
                     </View>
                 </View>
 
                 {/* Location */}
-                <Text style={styles.location}>
-                    📍 Médéa, Algeria
-                </Text>
+                <View style={styles.locationRow}>
+                    <Feather name="map-pin" size={13} color={colors.textSecondary} />
+                    <Text style={styles.location}>Médéa, Algeria</Text>
+                </View>
 
                 {/* Search */}
                 <View style={styles.searchContainer}>
-                    <Text style={styles.searchIcon}>⌕</Text>
+                    <Feather name="search" size={20} color={colors.textSecondary} style={styles.searchIcon} />
 
                     <Text style={styles.searchPlaceholder}>
                         Search products, brands & stores
@@ -63,6 +67,22 @@ export default function HomeScreen() {
                             subtitle={category.subtitle}
                             image={category.image}
                         />
+                    ))}
+                </ScrollView>
+
+                {/* Featured Products */}
+                <Text style={styles.sectionTitle}>
+                    Featured Products
+                </Text>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.categoriesScroll}
+                    contentContainerStyle={styles.categoriesContent}
+                >
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
                     ))}
                 </ScrollView>
             </View>
@@ -96,7 +116,7 @@ const styles = StyleSheet.create({
 
     logo: {
         fontSize: 30,
-        fontWeight: '600',
+        fontFamily: fonts.headingBold,
         color: colors.primary,
     },
 
@@ -105,13 +125,14 @@ const styles = StyleSheet.create({
         gap: spacing.md,
     },
 
-    icon: {
-        fontSize: 25,
-        color: colors.text,
+    locationRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        marginTop: spacing.sm,
     },
 
     location: {
-        marginTop: spacing.sm,
         fontSize: typography.small,
         color: colors.textSecondary,
     },
@@ -129,8 +150,6 @@ const styles = StyleSheet.create({
     },
 
     searchIcon: {
-        fontSize: 24,
-        color: colors.textSecondary,
         marginRight: spacing.sm,
     },
 
@@ -142,7 +161,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         marginTop: spacing.xl,
         fontSize: typography.heading,
-        fontWeight: '600',
+        fontFamily: fonts.heading,
         color: colors.text,
     },
 
@@ -154,28 +173,5 @@ const styles = StyleSheet.create({
     categoriesContent: {
         paddingLeft: spacing.lg,
         paddingRight: spacing.lg,
-    },
-
-    categoryCard: {
-        width: 150,
-        minHeight: 90,
-        marginRight: spacing.md,
-        padding: spacing.md,
-        borderRadius: radius.md,
-        backgroundColor: colors.surface,
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-
-    categoryName: {
-        fontSize: typography.body,
-        fontWeight: '600',
-        color: colors.text,
-    },
-
-    categorySubtitle: {
-        marginTop: spacing.sm,
-        fontSize: typography.small,
-        color: colors.textSecondary,
     },
 });

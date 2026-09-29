@@ -41,14 +41,11 @@ export const typography = {
   caption: 11,
 };
 
-/**
- * Fonts used by the Expo starter components.
- * Keep these exports so the existing template components
- * continue to work.
- */
 export const fonts = {
   sans: 'System',
   serif: 'Georgia',
   rounded: 'System',
   mono: 'monospace',
+  heading: 'PlayfairDisplay_600SemiBold',
+  headingBold: 'PlayfairDisplay_700Bold',
 };

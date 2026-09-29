@@ -38,7 +38,7 @@ export const categories: Category[] = [
         id: 'body-care',
         name: 'Body Care',
         subtitle: 'Daily care',
-        image: require('../../../../assets/categories/body care.jpg'),
+        image: require('../../../../assets/categories/body-care.jpg'),
     },
 
     {

@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../constants/theme';
 
@@ -8,12 +9,12 @@ type BottomNavProps = {
   onTabPress: (tab: Tab) => void;
 };
 
-const tabs: { key: Tab; label: string; icon: string }[] = [
-  { key: 'home', label: 'Home', icon: '⌂' },
-  { key: 'explore', label: 'Explore', icon: '⌕' },
-  { key: 'favorites', label: 'Favorites', icon: '♡' },
-  { key: 'orders', label: 'Orders', icon: '▢' },
-  { key: 'profile', label: 'Profile', icon: '◯' },
+const tabs: { key: Tab; label: string; icon: keyof typeof Feather.glyphMap }[] = [
+  { key: 'home', label: 'Home', icon: 'home' },
+  { key: 'explore', label: 'Explore', icon: 'compass' },
+  { key: 'favorites', label: 'Favorites', icon: 'heart' },
+  { key: 'orders', label: 'Orders', icon: 'shopping-bag' },
+  { key: 'profile', label: 'Profile', icon: 'user' },
 ];
 
 export default function BottomNav({
@@ -31,9 +32,12 @@ export default function BottomNav({
             onPress={() => onTabPress(tab.key)}
             style={styles.tab}
           >
-            <Text style={[styles.icon, active && styles.activeIcon]}>
-              {tab.icon}
-            </Text>
+            <Feather
+              name={tab.icon}
+              size={22}
+              color={active ? colors.primary : colors.textSecondary}
+              style={styles.icon}
+            />
 
             <Text style={[styles.label, active && styles.activeLabel]}>
               {tab.label}
@@ -64,18 +68,12 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    fontSize: 25,
-    color: colors.textSecondary,
     marginBottom: 4,
   },
 
   label: {
     fontSize: 11,
     color: colors.textSecondary,
-  },
-
-  activeIcon: {
-    color: colors.primary,
   },
 
   activeLabel: {
