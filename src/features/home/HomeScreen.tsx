@@ -1,5 +1,4 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
@@ -10,17 +9,12 @@ import {
     typography,
 } from '../../constants/theme';
 
-import BottomNav from '../../components/navigation/BottomNav';
 import ProductCard from '../products/components/ProductCard';
 import { products } from '../products/data/products';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
 
-type Tab = 'home' | 'explore' | 'favorites' | 'orders' | 'profile';
-
 export default function HomeScreen() {
-    const [activeTab, setActiveTab] = useState<Tab>('home');
-
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -86,12 +80,6 @@ export default function HomeScreen() {
                     ))}
                 </ScrollView>
             </View>
-
-            {/* Bottom Navigation */}
-            <BottomNav
-                activeTab={activeTab}
-                onTabPress={setActiveTab}
-            />
         </View>
     );
 }

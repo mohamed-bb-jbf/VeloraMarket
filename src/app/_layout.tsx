@@ -1,6 +1,5 @@
 import { Stack } from 'expo-router';
 
-// (1) imports جديدة، تحت import الـ Stack
 import {
   PlayfairDisplay_600SemiBold,
   PlayfairDisplay_700Bold,
@@ -9,11 +8,11 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-// (2) سطر جديد، خارج الدالة
+import { FavoritesProvider } from '../store/favorites-context';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // (3) كود جديد، داخل الدالة وقبل return
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_600SemiBold,
     PlayfairDisplay_700Bold,
@@ -29,12 +28,13 @@ export default function RootLayout() {
     return null;
   }
 
-  // هذا الجزء القديم لا تغيّره
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
+    <FavoritesProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      />
+    </FavoritesProvider>
   );
 }
