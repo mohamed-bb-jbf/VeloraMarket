@@ -4,6 +4,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts, radius, spacing } from '../../../constants/theme';
 import { useFavorites } from '../../../store/favorites-context';
 import type { Product } from '../data/products';
+import { getLowestPrice } from '../utils';
 
 type ProductCardProps = {
     product: Product;
@@ -13,6 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     const router = useRouter();
     const { isFavorite, toggleFavorite } = useFavorites();
     const favorite = isFavorite(product.id);
+    const lowestPrice = getLowestPrice(product);
 
     return (
         <Pressable
@@ -46,7 +48,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </Text>
 
             <View style={styles.footer}>
-                <Text style={styles.price}>{product.price.toLocaleString()} DA</Text>
+                <Text style={styles.price}>From {lowestPrice.toLocaleString()} DA</Text>
 
                 <View style={styles.rating}>
                     <Feather name="star" size={12} color={colors.accent} />
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
     },
 
     price: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: '600',
         color: colors.primary,
     },

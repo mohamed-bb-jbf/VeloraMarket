@@ -8,6 +8,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
+import { CartProvider } from '../store/cart-context';
 import { FavoritesProvider } from '../store/favorites-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -30,11 +31,13 @@ export default function RootLayout() {
 
   return (
     <FavoritesProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
+      <CartProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </CartProvider>
     </FavoritesProvider>
   );
 }

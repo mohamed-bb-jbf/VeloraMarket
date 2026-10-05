@@ -1,5 +1,6 @@
 import { Feather } from '@expo/vector-icons';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
     colors,
@@ -11,10 +12,14 @@ import {
 
 import ProductCard from '../products/components/ProductCard';
 import { products } from '../products/data/products';
+import StoreCard from '../stores/components/StoreCard';
+import { stores } from '../stores/data/stores';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
 
 export default function HomeScreen() {
+    const router = useRouter();
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -23,8 +28,15 @@ export default function HomeScreen() {
                     <Text style={styles.logo}>Velora</Text>
 
                     <View style={styles.headerActions}>
-                        <Feather name="heart" size={22} color={colors.text} />
-                        <Feather name="user" size={22} color={colors.text} />
+                        <Pressable onPress={() => router.push('/cart')}>
+                            <Feather name="shopping-bag" size={22} color={colors.text} />
+                        </Pressable>
+                        <Pressable onPress={() => router.push('/profile')}>
+                            <Feather name="heart" size={22} color={colors.text} />
+                        </Pressable>
+                        <Pressable onPress={() => router.push('/profile')}>
+                            <Feather name="user" size={22} color={colors.text} />
+                        </Pressable>
                     </View>
                 </View>
 
@@ -35,13 +47,16 @@ export default function HomeScreen() {
                 </View>
 
                 {/* Search */}
-                <View style={styles.searchContainer}>
+                <Pressable
+                    style={styles.searchContainer}
+                    onPress={() => router.push('/search')}
+                >
                     <Feather name="search" size={20} color={colors.textSecondary} style={styles.searchIcon} />
 
                     <Text style={styles.searchPlaceholder}>
                         Search products, brands & stores
                     </Text>
-                </View>
+                </Pressable>
 
                 {/* Categories */}
                 <Text style={styles.sectionTitle}>
@@ -77,6 +92,22 @@ export default function HomeScreen() {
                 >
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
+                    ))}
+                </ScrollView>
+
+                {/* Nearby Stores */}
+                <Text style={styles.sectionTitle}>
+                    Nearby Stores
+                </Text>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.categoriesScroll}
+                    contentContainerStyle={styles.categoriesContent}
+                >
+                    {stores.map((store) => (
+                        <StoreCard key={store.id} store={store} />
                     ))}
                 </ScrollView>
             </View>
