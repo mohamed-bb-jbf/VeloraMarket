@@ -18,6 +18,7 @@ import StoreCard from '../stores/components/StoreCard';
 import { stores } from '../stores/data/stores';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
+
 export default function HomeScreen() {
     const router = useRouter();
     const brands = getUniqueBrands(products);
@@ -85,6 +86,7 @@ export default function HomeScreen() {
                         />
                     ))}
                 </ScrollView>
+
                 {/* Special Offers */}
                 {offers.length > 0 && (
                     <>
@@ -106,9 +108,14 @@ export default function HomeScreen() {
                 )}
 
                 {/* Featured Products */}
-                <Text style={styles.sectionTitle}>
-                    Featured Products
-                </Text>
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>
+                        Featured Products
+                    </Text>
+                    <Pressable onPress={() => router.push('/(tabs)/explore')}>
+                        <Text style={styles.seeAll}>See all</Text>
+                    </Pressable>
+                </View>
 
                 <ScrollView
                     horizontal
@@ -228,6 +235,19 @@ const styles = StyleSheet.create({
         fontSize: typography.heading,
         fontFamily: fonts.heading,
         color: colors.text,
+    },
+
+    sectionHeader: {
+        marginTop: spacing.xl,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+
+    seeAll: {
+        fontSize: typography.small,
+        fontWeight: '600',
+        color: colors.primary,
     },
 
     categoriesScroll: {
