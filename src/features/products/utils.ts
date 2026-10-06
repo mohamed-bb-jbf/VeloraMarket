@@ -7,3 +7,7 @@ export function getLowestPrice(product: Product): number {
 export function getStoreCount(product: Product): number {
     return product.listings.length;
 }
+export function getUniqueBrands(products: Product[]): string[] {
+    const unique = new Set(products.map((product) => product.brand));
+    return Array.from(unique);
+}

@@ -9,9 +9,10 @@ import {
     spacing,
     typography,
 } from '../../constants/theme';
-
+import BrandCard from '../products/components/BrandCard';
 import ProductCard from '../products/components/ProductCard';
 import { products } from '../products/data/products';
+import { getUniqueBrands } from '../products/utils';
 import StoreCard from '../stores/components/StoreCard';
 import { stores } from '../stores/data/stores';
 import { categories } from './components/categories';
@@ -19,6 +20,7 @@ import CategoryCard from './components/CategoryCard';
 
 export default function HomeScreen() {
     const router = useRouter();
+    const brands = getUniqueBrands(products);
 
     return (
         <View style={styles.container}>
@@ -92,6 +94,22 @@ export default function HomeScreen() {
                 >
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
+                    ))}
+                </ScrollView>
+
+                {/* Popular Brands */}
+                <Text style={styles.sectionTitle}>
+                    Popular Brands
+                </Text>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.categoriesScroll}
+                    contentContainerStyle={styles.categoriesContent}
+                >
+                    {brands.map((brand) => (
+                        <BrandCard key={brand} name={brand} />
                     ))}
                 </ScrollView>
 
