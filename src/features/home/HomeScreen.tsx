@@ -129,9 +129,14 @@ export default function HomeScreen() {
                 </ScrollView>
 
                 {/* Popular Brands */}
-                <Text style={styles.sectionTitle}>
-                    Popular Brands
-                </Text>
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>
+                        Popular Brands
+                    </Text>
+                    <Pressable onPress={() => router.push('/(tabs)/explore')}>
+                        <Text style={styles.seeAll}>See all</Text>
+                    </Pressable>
+                </View>
 
                 <ScrollView
                     horizontal
@@ -145,10 +150,15 @@ export default function HomeScreen() {
                 </ScrollView>
 
                 {/* Nearby Stores */}
-                <Text style={styles.sectionTitle}>
-                    Nearby Stores
-                </Text>
-
+                {/* Nearby Stores */}
+                <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>
+                        Nearby Stores
+                    </Text>
+                    <Pressable onPress={() => router.push('/(tabs)/explore')}>
+                        <Text style={styles.seeAll}>See all</Text>
+                    </Pressable>
+                </View>
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -219,6 +229,11 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         flexDirection: 'row',
         alignItems: 'center',
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 6,
+        elevation: 1,
     },
 
     searchIcon: {
