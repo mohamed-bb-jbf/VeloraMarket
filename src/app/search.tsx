@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
     FlatList,
     Pressable,
@@ -23,6 +23,7 @@ export default function SearchScreen() {
     const [query, setQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<SortOrder>('none');
+    const listRef = useRef<FlatList>(null);
 
     const categoryOptions = useMemo(() => {
         const unique = new Set(products.map((product) => product.category));
@@ -56,6 +57,10 @@ export default function SearchScreen() {
         return filtered;
     }, [query, selectedCategory, sortOrder]);
 
+    const scrollToTop = () => {
+        listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -68,7 +73,10 @@ export default function SearchScreen() {
 
                     <TextInput
                         value={query}
-                        onChangeText={setQuery}
+                        onChangeText={(text) => {
+                            setQuery(text);
+                            scrollToTop();
+                        }}
                         placeholder="Search products, brands & stores"
                         placeholderTextColor={colors.textSecondary}
                         style={styles.input}
@@ -86,7 +94,10 @@ export default function SearchScreen() {
             >
                 <Pressable
                     style={[styles.chip, selectedCategory === null && styles.chipActive]}
-                    onPress={() => setSelectedCategory(null)}
+                    onPress={() => {
+                        setSelectedCategory(null);
+                        scrollToTop();
+                    }}
                 >
                     <Text style={[styles.chipText, selectedCategory === null && styles.chipTextActive]}>
                         All
@@ -97,7 +108,10 @@ export default function SearchScreen() {
                     <Pressable
                         key={category}
                         style={[styles.chip, selectedCategory === category && styles.chipActive]}
-                        onPress={() => setSelectedCategory(category)}
+                        onPress={() => {
+                            setSelectedCategory(category);
+                            scrollToTop();
+                        }}
                     >
                         <Text style={[styles.chipText, selectedCategory === category && styles.chipTextActive]}>
                             {category}
@@ -107,7 +121,10 @@ export default function SearchScreen() {
 
                 <Pressable
                     style={[styles.chip, sortOrder === 'asc' && styles.chipActive]}
-                    onPress={() => setSortOrder(sortOrder === 'asc' ? 'none' : 'asc')}
+                    onPress={() => {
+                        setSortOrder(sortOrder === 'asc' ? 'none' : 'asc');
+                        scrollToTop();
+                    }}
                 >
                     <Feather
                         name="arrow-up"
@@ -121,7 +138,10 @@ export default function SearchScreen() {
 
                 <Pressable
                     style={[styles.chip, sortOrder === 'desc' && styles.chipActive]}
-                    onPress={() => setSortOrder(sortOrder === 'desc' ? 'none' : 'desc')}
+                    onPress={() => {
+                        setSortOrder(sortOrder === 'desc' ? 'none' : 'desc');
+                        scrollToTop();
+                    }}
                 >
                     <Feather
                         name="arrow-down"
@@ -150,6 +170,7 @@ export default function SearchScreen() {
                 </View>
             ) : (
                 <FlatList
+                    ref={listRef}
                     data={results}
                     keyExtractor={(item) => item.id}
                     numColumns={2}

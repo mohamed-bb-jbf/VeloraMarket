@@ -1,6 +1,14 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+    useWindowDimensions,
+} from 'react-native';
+
 import { colors, fonts, radius, spacing } from '../../../constants/theme';
 import { useFavorites } from '../../../store/favorites-context';
 import type { Product } from '../data/products';
@@ -8,23 +16,47 @@ import { getLowestPrice } from '../utils';
 
 type ProductCardProps = {
     product: Product;
+    grid?: boolean;
 };
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+    product,
+    grid = false,
+}: ProductCardProps) {
     const router = useRouter();
+    const { width } = useWindowDimensions();
+
     const { isFavorite, toggleFavorite } = useFavorites();
+
     const favorite = isFavorite(product.id);
     const lowestPrice = getLowestPrice(product);
 
+    const gridWidth =
+        (width - spacing.lg * 2 - spacing.md) / 2;
+
+    const cardWidth = grid ? gridWidth : 150;
+
     return (
         <Pressable
-            style={styles.card}
+            style={[
+                styles.card,
+                {
+                    width: cardWidth,
+                    marginRight: grid ? 0 : spacing.md,
+                },
+            ]}
             onPress={() => router.push(`/product/${product.id}`)}
         >
             <View style={styles.imageWrapper}>
                 <Image
                     source={product.image}
-                    style={styles.image}
+                    style={[
+                        styles.image,
+                        {
+                            width: cardWidth,
+                            height: cardWidth,
+                        },
+                    ]}
                     resizeMode="cover"
                 />
 
@@ -36,23 +68,41 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <Ionicons
                         name={favorite ? 'heart' : 'heart-outline'}
                         size={16}
-                        color={favorite ? colors.primary : colors.textSecondary}
+                        color={
+                            favorite
+                                ? colors.primary
+                                : colors.textSecondary
+                        }
                     />
                 </Pressable>
             </View>
 
-            <Text style={styles.brand}>{product.brand}</Text>
+            <Text style={styles.brand}>
+                {product.brand}
+            </Text>
 
-            <Text style={styles.name} numberOfLines={1}>
+            <Text
+                style={styles.name}
+                numberOfLines={1}
+            >
                 {product.name}
             </Text>
 
             <View style={styles.footer}>
-                <Text style={styles.price}>From {lowestPrice.toLocaleString()} DA</Text>
+                <Text style={styles.price}>
+                    From {lowestPrice.toLocaleString()} DA
+                </Text>
 
                 <View style={styles.rating}>
-                    <Feather name="star" size={12} color={colors.accent} />
-                    <Text style={styles.ratingText}>{product.rating}</Text>
+                    <Feather
+                        name="star"
+                        size={12}
+                        color={colors.accent}
+                    />
+
+                    <Text style={styles.ratingText}>
+                        {product.rating}
+                    </Text>
                 </View>
             </View>
         </Pressable>
@@ -61,8 +111,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 const styles = StyleSheet.create({
     card: {
-        width: 150,
-        marginRight: spacing.md,
+        marginBottom: spacing.lg,
     },
 
     imageWrapper: {
@@ -70,8 +119,6 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: 150,
-        height: 150,
         borderRadius: radius.md,
     },
 
