@@ -10,6 +10,7 @@ import {
     typography,
 } from '../../constants/theme';
 import BrandCard from '../products/components/BrandCard';
+import OfferCard from '../products/components/OfferCard';
 import ProductCard from '../products/components/ProductCard';
 import { products } from '../products/data/products';
 import { getUniqueBrands } from '../products/utils';
@@ -17,14 +18,18 @@ import StoreCard from '../stores/components/StoreCard';
 import { stores } from '../stores/data/stores';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
-
 export default function HomeScreen() {
     const router = useRouter();
     const brands = getUniqueBrands(products);
+    const offers = products.filter((product) => product.discountPercent);
 
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
+            <ScrollView
+                style={styles.content}
+                contentContainerStyle={styles.contentInner}
+                showsVerticalScrollIndicator={false}
+            >
                 {/* Header */}
                 <View style={styles.header}>
                     <Text style={styles.logo}>Velora</Text>
@@ -80,6 +85,25 @@ export default function HomeScreen() {
                         />
                     ))}
                 </ScrollView>
+                {/* Special Offers */}
+                {offers.length > 0 && (
+                    <>
+                        <Text style={styles.sectionTitle}>
+                            Special Offers
+                        </Text>
+
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={styles.categoriesScroll}
+                            contentContainerStyle={styles.categoriesContent}
+                        >
+                            {offers.map((product) => (
+                                <OfferCard key={product.id} product={product} />
+                            ))}
+                        </ScrollView>
+                    </>
+                )}
 
                 {/* Featured Products */}
                 <Text style={styles.sectionTitle}>
@@ -128,7 +152,7 @@ export default function HomeScreen() {
                         <StoreCard key={store.id} store={store} />
                     ))}
                 </ScrollView>
-            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -142,7 +166,11 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: spacing.lg,
+    },
+
+    contentInner: {
         paddingTop: spacing.xl,
+        paddingBottom: spacing.xxl,
     },
 
     header: {

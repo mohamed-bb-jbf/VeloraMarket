@@ -11,6 +11,7 @@ export type Product = {
     image: any;
     rating: number;
     listings: StoreListing[];
+    discountPercent?: number;
 };
 
 export const products: Product[] = [
@@ -21,6 +22,7 @@ export const products: Product[] = [
         category: 'Makeup',
         image: require('../../../../assets/categories/makeup.jpg'),
         rating: 4.8,
+        discountPercent: 20,
         listings: [
             { storeId: 'store-1', price: 2800 },
             { storeId: 'store-2', price: 3000 },
@@ -61,12 +63,12 @@ export const products: Product[] = [
         category: 'Perfumes',
         image: require('../../../../assets/categories/perfumes.jpg'),
         rating: 4.9,
+        discountPercent: 15,
         listings: [
             { storeId: 'store-1', price: 12500 },
             { storeId: 'store-3', price: 13000 },
         ],
     },
-
     {
         id: 'product-5',
         name: 'Nourishing Body Lotion',
