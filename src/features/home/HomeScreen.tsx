@@ -38,7 +38,7 @@ export default function HomeScreen() {
                         <Pressable onPress={() => router.push('/cart')}>
                             <Feather name="shopping-bag" size={22} color={colors.text} />
                         </Pressable>
-                        <Pressable onPress={() => router.push('/profile')}>
+                        <Pressable onPress={() => router.push('/favorites')}>
                             <Feather name="heart" size={22} color={colors.text} />
                         </Pressable>
                         <Pressable onPress={() => router.push('/profile')}>
