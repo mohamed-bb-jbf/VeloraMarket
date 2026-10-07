@@ -8,6 +8,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
+import { AuthProvider } from '../store/auth-context';
 import { CartProvider } from '../store/cart-context';
 import { FavoritesProvider } from '../store/favorites-context';
 
@@ -30,14 +31,16 @@ export default function RootLayout() {
   }
 
   return (
-    <FavoritesProvider>
-      <CartProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        />
-      </CartProvider>
-    </FavoritesProvider>
+    <AuthProvider>
+      <FavoritesProvider>
+        <CartProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          />
+        </CartProvider>
+      </FavoritesProvider>
+    </AuthProvider>
   );
 }
