@@ -116,8 +116,12 @@ const styles = StyleSheet.create({
 
     imageWrapper: {
         position: 'relative',
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 2,
     },
-
     image: {
         borderRadius: radius.md,
     },

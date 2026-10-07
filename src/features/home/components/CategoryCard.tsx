@@ -37,8 +37,12 @@ const styles = StyleSheet.create({
         width: 118,
         height: 118,
         borderRadius: radius.md,
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 2,
     },
-
     name: {
         marginTop: spacing.sm,
         fontSize: 14,
