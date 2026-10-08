@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../../constants/theme';
+import { useAuth } from '../../store/auth-context';
 import { useCart } from '../../store/cart-context';
 import { useFavorites } from '../../store/favorites-context';
 
@@ -10,6 +11,7 @@ export default function ProfileScreen() {
     const router = useRouter();
     const { favoriteIds } = useFavorites();
     const { totalItems } = useCart();
+    const { user, logout } = useAuth();
 
     const menuItems = [
         {
@@ -42,13 +44,26 @@ export default function ProfileScreen() {
                 </View>
 
                 <View style={styles.guestInfo}>
-                    <Text style={styles.guestTitle}>Guest</Text>
-                    <Text style={styles.guestSubtitle}>Sign in to sync your account</Text>
+                    <Text style={styles.guestTitle}>
+                        {user ? user.email : 'Guest'}
+                    </Text>
+                    <Text style={styles.guestSubtitle}>
+                        {user ? 'Signed in' : 'Sign in to sync your account'}
+                    </Text>
                 </View>
 
-                <Pressable style={styles.signInButton}>
-                    <Text style={styles.signInText}>Sign In</Text>
-                </Pressable>
+                {user ? (
+                    <Pressable style={styles.signInButton} onPress={() => logout()}>
+                        <Text style={styles.signInText}>Sign Out</Text>
+                    </Pressable>
+                ) : (
+                    <Pressable
+                        style={styles.signInButton}
+                        onPress={() => router.push('/auth')}
+                    >
+                        <Text style={styles.signInText}>Sign In</Text>
+                    </Pressable>
+                )}
             </View>
 
             <View style={styles.menu}>
