@@ -1,20 +1,28 @@
 import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../../constants/theme';
 import ProductCard from '../../features/products/components/ProductCard';
-import { products } from '../../features/products/data/products';
-import { stores } from '../../features/stores/data/stores';
+import { useCatalog } from '../../store/catalog-context';
 
 export default function StoreDetailsScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
+    const { products, stores, loading } = useCatalog();
 
     const store = stores.find((item) => item.id === id);
     const storeProducts = products.filter((product) =>
         product.listings.some((listing) => listing.storeId === id)
     );
+
+    if (loading) {
+        return (
+            <View style={styles.notFound}>
+                <ActivityIndicator color={colors.primary} />
+            </View>
+        );
+    }
 
     if (!store) {
         return (

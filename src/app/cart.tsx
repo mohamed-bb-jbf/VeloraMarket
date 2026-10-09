@@ -6,16 +6,17 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    View,
+    View
 } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../constants/theme';
-import { products } from '../features/products/data/products';
 import { getLowestPrice } from '../features/products/utils';
 import { useCart } from '../store/cart-context';
+import { useCatalog } from '../store/catalog-context';
 export default function CartScreen() {
     const router = useRouter();
     const { items, removeFromCart, updateQuantity } = useCart();
+    const { products, loading } = useCatalog();
 
     const cartProducts = items
         .map((item) => {
@@ -31,7 +32,7 @@ export default function CartScreen() {
         0
     );
 
-    if (cartProducts.length === 0) {
+    if (loading) {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
