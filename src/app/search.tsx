@@ -13,8 +13,8 @@ import {
 
 import { colors, fonts, radius, spacing, typography } from '../constants/theme';
 import ProductCard from '../features/products/components/ProductCard';
-import { products } from '../features/products/data/products';
 import { getLowestPrice } from '../features/products/utils';
+import { useCatalog } from '../store/catalog-context';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
@@ -23,12 +23,13 @@ export default function SearchScreen() {
     const [query, setQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<SortOrder>('none');
+    const { products } = useCatalog();
     const listRef = useRef<FlatList>(null);
 
     const categoryOptions = useMemo(() => {
         const unique = new Set(products.map((product) => product.category));
         return Array.from(unique);
-    }, []);
+    }, [products]);
 
     const hasActiveSearch = query.trim().length > 0 || selectedCategory !== null;
 
@@ -55,7 +56,7 @@ export default function SearchScreen() {
         }
 
         return filtered;
-    }, [query, selectedCategory, sortOrder]);
+    }, [products, query, selectedCategory, sortOrder]);
 
     const scrollToTop = () => {
         listRef.current?.scrollToOffset({ offset: 0, animated: false });
