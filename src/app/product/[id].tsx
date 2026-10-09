@@ -1,21 +1,31 @@
 import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../../constants/theme';
-import { products } from '../../features/products/data/products';
+
 import { getLowestPrice } from '../../features/products/utils';
-import { stores } from '../../features/stores/data/stores';
+
 import { useCart } from '../../store/cart-context';
+import { useCatalog } from '../../store/catalog-context';
 
 export default function ProductDetailsScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
+    const { products, stores, loading } = useCatalog();
 
     const product = products.find((item) => item.id === id);
+
+    if (loading) {
+        return (
+            <View style={styles.notFound}>
+                <ActivityIndicator color={colors.primary} />
+            </View>
+        );
+    }
 
     if (!product) {
         return (
@@ -24,7 +34,6 @@ export default function ProductDetailsScreen() {
             </View>
         );
     }
-
     const listings = [...product.listings].sort((a, b) => a.price - b.price);
     const lowestPrice = getLowestPrice(product);
 
