@@ -9,9 +9,13 @@ import { useFavorites } from '../../store/favorites-context';
 
 export default function ProfileScreen() {
     const router = useRouter();
-    const { favoriteIds } = useFavorites();
-    const { totalItems } = useCart();
+    const { favoriteIds = [] } = useFavorites();
+    const { totalItems = 0 } = useCart();
     const { user, logout } = useAuth();
+
+    const isSignedIn = Boolean(user);
+    const displayName = user?.email ?? 'Guest';
+    const subtitle = isSignedIn ? 'Signed in' : 'Sign in to sync your account';
 
     const menuItems = [
         {
@@ -34,6 +38,15 @@ export default function ProfileScreen() {
         },
     ];
 
+    const handleAuthPress = () => {
+        if (isSignedIn) {
+            logout();
+            return;
+        }
+
+        router.push('/auth');
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Profile</Text>
@@ -44,26 +57,13 @@ export default function ProfileScreen() {
                 </View>
 
                 <View style={styles.guestInfo}>
-                    <Text style={styles.guestTitle}>
-                        {user ? user.email : 'Guest'}
-                    </Text>
-                    <Text style={styles.guestSubtitle}>
-                        {user ? 'Signed in' : 'Sign in to sync your account'}
-                    </Text>
+                    <Text style={styles.guestTitle}>{displayName}</Text>
+                    <Text style={styles.guestSubtitle}>{subtitle}</Text>
                 </View>
 
-                {user ? (
-                    <Pressable style={styles.signInButton} onPress={() => logout()}>
-                        <Text style={styles.signInText}>Sign Out</Text>
-                    </Pressable>
-                ) : (
-                    <Pressable
-                        style={styles.signInButton}
-                        onPress={() => router.push('/auth')}
-                    >
-                        <Text style={styles.signInText}>Sign In</Text>
-                    </Pressable>
-                )}
+                <Pressable style={styles.signInButton} onPress={handleAuthPress}>
+                    <Text style={styles.signInText}>{isSignedIn ? 'Sign Out' : 'Sign In'}</Text>
+                </Pressable>
             </View>
 
             <View style={styles.menu}>
@@ -89,6 +89,7 @@ export default function ProfileScreen() {
                     </Pressable>
                 ))}
             </View>
+
         </View>
     );
 }
@@ -116,7 +117,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.surface,
         borderWidth: 1,
         borderColor: colors.border,
-        gap: spacing.md,
     },
 
     avatar: {
@@ -128,10 +128,12 @@ const styles = StyleSheet.create({
         borderColor: colors.border,
         alignItems: 'center',
         justifyContent: 'center',
+        marginRight: spacing.md,
     },
 
     guestInfo: {
         flex: 1,
+        marginRight: spacing.md,
     },
 
     guestTitle: {
@@ -175,18 +177,17 @@ const styles = StyleSheet.create({
     menuLeft: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: spacing.md,
     },
 
     menuLabel: {
         fontSize: typography.body,
         color: colors.text,
+        marginLeft: spacing.md,
     },
 
     menuRight: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: spacing.sm,
     },
 
     badge: {
@@ -197,6 +198,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 6,
+        marginRight: spacing.sm,
     },
 
     badgeText: {

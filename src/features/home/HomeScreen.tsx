@@ -1,6 +1,13 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
 
 import {
     colors,
@@ -9,20 +16,38 @@ import {
     spacing,
     typography,
 } from '../../constants/theme';
+import { useCatalog } from '../../store/catalog-context';
 import BrandCard from '../products/components/BrandCard';
 import OfferCard from '../products/components/OfferCard';
 import ProductCard from '../products/components/ProductCard';
-import { products } from '../products/data/products';
 import { getUniqueBrands } from '../products/utils';
 import StoreCard from '../stores/components/StoreCard';
-import { stores } from '../stores/data/stores';
 import { categories } from './components/categories';
 import CategoryCard from './components/CategoryCard';
 
 export default function HomeScreen() {
     const router = useRouter();
+    const { products, stores, loading, error } = useCatalog();
     const brands = getUniqueBrands(products);
     const offers = products.filter((product) => product.discountPercent);
+
+    if (loading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator color={colors.primary} />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.centered}>
+                <Text style={styles.errorText}>
+                    Could not load products. Please try again.
+                </Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -150,7 +175,6 @@ export default function HomeScreen() {
                 </ScrollView>
 
                 {/* Nearby Stores */}
-                {/* Nearby Stores */}
                 <View style={styles.sectionHeader}>
                     <Text style={styles.sectionTitle}>
                         Nearby Stores
@@ -159,6 +183,7 @@ export default function HomeScreen() {
                         <Text style={styles.seeAll}>See all</Text>
                     </Pressable>
                 </View>
+
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -188,6 +213,20 @@ const styles = StyleSheet.create({
     contentInner: {
         paddingTop: spacing.xl,
         paddingBottom: spacing.xxl,
+    },
+
+    centered: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.background,
+        paddingHorizontal: spacing.xl,
+    },
+
+    errorText: {
+        fontSize: typography.small,
+        color: colors.textSecondary,
+        textAlign: 'center',
     },
 
     header: {
@@ -231,7 +270,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         shadowColor: colors.black,
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.07,
+        shadowOpacity: 0.04,
         shadowRadius: 6,
         elevation: 1,
     },

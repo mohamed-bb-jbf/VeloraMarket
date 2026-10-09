@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 
 import { AuthProvider } from '../store/auth-context';
 import { CartProvider } from '../store/cart-context';
+import { CatalogProvider } from '../store/catalog-context';
 import { FavoritesProvider } from '../store/favorites-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -32,15 +33,17 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <FavoritesProvider>
-        <CartProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          />
-        </CartProvider>
-      </FavoritesProvider>
+      <CatalogProvider>
+        <FavoritesProvider>
+          <CartProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            />
+          </CartProvider>
+        </FavoritesProvider>
+      </CatalogProvider>
     </AuthProvider>
   );
 }
