@@ -1,4 +1,8 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+import { db } from '../services/firebase';
+import { useAuth } from './auth-context';
 
 type CartItem = {
     productId: string;
@@ -15,27 +19,70 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+function mergeCarts(remote: CartItem[], local: CartItem[]): CartItem[] {
+    const quantities = new Map<string, number>();
+
+    [...remote, ...local].forEach((item) => {
+        quantities.set(
+            item.productId,
+            Math.max(quantities.get(item.productId) ?? 0, item.quantity)
+        );
+    });
+
+    return Array.from(quantities, ([productId, quantity]) => ({ productId, quantity }));
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
+    const { user } = useAuth();
     const [items, setItems] = useState<CartItem[]>([]);
 
-    const addToCart = (productId: string) => {
-        setItems((current) => {
-            const existing = current.find((item) => item.productId === productId);
+    useEffect(() => {
+        if (!user) {
+            setItems([]);
+            return;
+        }
 
-            if (existing) {
-                return current.map((item) =>
-                    item.productId === productId
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
+        const sync = async () => {
+            try {
+                const ref = doc(db, 'users', user.uid);
+                const snap = await getDoc(ref);
+                const remote: CartItem[] = snap.exists() ? snap.data().cartItems ?? [] : [];
+                const merged = mergeCarts(remote, items);
+
+                setItems(merged);
+                await setDoc(ref, { cartItems: merged }, { merge: true });
+            } catch {
+                // keep the local cart if the sync fails
             }
+        };
 
-            return [...current, { productId, quantity: 1 }];
-        });
+        sync();
+    }, [user?.uid]);
+
+    const updateItems = (next: CartItem[]) => {
+        setItems(next);
+
+        if (user) {
+            setDoc(doc(db, 'users', user.uid), { cartItems: next }, { merge: true }).catch(() => {});
+        }
+    };
+
+    const addToCart = (productId: string) => {
+        const existing = items.find((item) => item.productId === productId);
+
+        updateItems(
+            existing
+                ? items.map((item) =>
+                      item.productId === productId
+                          ? { ...item, quantity: item.quantity + 1 }
+                          : item
+                  )
+                : [...items, { productId, quantity: 1 }]
+        );
     };
 
     const removeFromCart = (productId: string) => {
-        setItems((current) => current.filter((item) => item.productId !== productId));
+        updateItems(items.filter((item) => item.productId !== productId));
     };
 
     const updateQuantity = (productId: string, quantity: number) => {
@@ -44,8 +91,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return;
         }
 
-        setItems((current) =>
-            current.map((item) =>
+        updateItems(
+            items.map((item) =>
                 item.productId === productId ? { ...item, quantity } : item
             )
         );
