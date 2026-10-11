@@ -1,12 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
-
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts, spacing, typography } from '../../constants/theme';
 import ProductCard from '../../features/products/components/ProductCard';
-import { products } from '../../features/products/data/products';
+import { useCatalog } from '../../store/catalog-context';
 import { useFavorites } from '../../store/favorites-context';
 
 export default function FavoritesScreen() {
     const { favoriteIds } = useFavorites();
+    const { products, loading } = useCatalog();
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator color={colors.primary} />
+            </View>
+        );
+    }
+
     const favoriteProducts = products.filter((product) =>
         favoriteIds.includes(product.id)
     );
