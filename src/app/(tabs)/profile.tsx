@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../../constants/theme';
+
 import { useAuth } from '../../store/auth-context';
 import { useCart } from '../../store/cart-context';
 import { useFavorites } from '../../store/favorites-context';
@@ -206,4 +207,5 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: colors.white,
     },
+
 });

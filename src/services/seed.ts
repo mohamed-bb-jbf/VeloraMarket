@@ -19,3 +19,19 @@ export async function seedDatabase() {
 
     await batch.commit();
 }
+export async function seedListings() {
+    const batch = writeBatch(db);
+
+    products.forEach((product) => {
+        product.listings.forEach((listing) => {
+            batch.set(doc(db, 'listings', `${product.id}_${listing.storeId}`), {
+                productId: product.id,
+                storeId: listing.storeId,
+                price: listing.price,
+                ownerId: null,
+            });
+        });
+    });
+
+    await batch.commit();
+}
