@@ -5,6 +5,7 @@ export type Store = {
     location: string;
     distanceKm: number;
     openNow: boolean;
+    ownerId?: string;
 };
 
 export const stores: Store[] = [
@@ -40,4 +41,5 @@ export const stores: Store[] = [
         distanceKm: 3.4,
         openNow: true,
     },
+
 ];
