@@ -3,9 +3,9 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, radius, spacing, typography } from '../../constants/theme';
-
 import { useAuth } from '../../store/auth-context';
 import { useCart } from '../../store/cart-context';
+import { useCatalog } from '../../store/catalog-context';
 import { useFavorites } from '../../store/favorites-context';
 
 export default function ProfileScreen() {
@@ -13,10 +13,16 @@ export default function ProfileScreen() {
     const { favoriteIds = [] } = useFavorites();
     const { totalItems = 0 } = useCart();
     const { user, logout } = useAuth();
+    const { stores } = useCatalog();
 
     const isSignedIn = Boolean(user);
     const displayName = user?.email ?? 'Guest';
-    const subtitle = isSignedIn ? 'Signed in' : 'Sign in to sync your account';
+    const myStore = user ? stores.find((store) => store.ownerId === user.uid) : undefined;
+    const subtitle = myStore
+        ? `Owner of ${myStore.name}`
+        : isSignedIn
+        ? 'Signed in'
+        : 'Sign in to sync your account';
 
     const menuItems = [
         {
@@ -37,6 +43,16 @@ export default function ProfileScreen() {
             count: 0,
             onPress: () => router.push('/orders'),
         },
+        ...(myStore
+            ? [
+                  {
+                      icon: 'plus-circle' as const,
+                      label: 'Add product',
+                      count: 0,
+                      onPress: () => router.push('/seller/add-product'),
+                  },
+              ]
+            : []),
     ];
 
     const handleAuthPress = () => {
@@ -90,7 +106,6 @@ export default function ProfileScreen() {
                     </Pressable>
                 ))}
             </View>
-
         </View>
     );
 }
@@ -207,5 +222,4 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: colors.white,
     },
-
 });
