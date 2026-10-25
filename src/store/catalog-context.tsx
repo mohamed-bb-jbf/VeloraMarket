@@ -1,7 +1,8 @@
 import { collection, getDocs } from 'firebase/firestore';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import type { Product } from '../features/products/data/products';
+
+import type { Product, StoreListing } from '../features/products/data/products';
 import { productImages } from '../features/products/images';
 import type { Store } from '../features/stores/data/stores';
 import { db } from '../services/firebase';
@@ -24,20 +25,37 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         const load = async () => {
             try {
-                const [productsSnap, storesSnap] = await Promise.all([
+                const [productsSnap, storesSnap, listingsSnap] = await Promise.all([
                     getDocs(collection(db, 'products')),
                     getDocs(collection(db, 'stores')),
+                    getDocs(collection(db, 'listings')),
                 ]);
 
+                const listingsByProduct = new Map<string, StoreListing[]>();
+
+                listingsSnap.docs.forEach((item) => {
+                    const data = item.data() as { productId: string; storeId: string; price: number };
+                    const current = listingsByProduct.get(data.productId) ?? [];
+
+                    current.push({ storeId: data.storeId, price: data.price });
+                    listingsByProduct.set(data.productId, current);
+                });
+
                 setProducts(
-                    productsSnap.docs.map((item) => {
-                        const data = item.data() as Omit<Product, 'image'> & { imageKey: string };
-                        return {
-                            ...data,
-                            id: item.id,
-                            image: productImages[data.imageKey] ?? productImages.makeup,
-                        };
-                    })
+                    productsSnap.docs
+                        .map((item) => {
+                            const data = item.data() as Omit<Product, 'image' | 'listings'> & {
+                                imageKey: string;
+                            };
+
+                            return {
+                                ...data,
+                                id: item.id,
+                                image: productImages[data.imageKey] ?? productImages.makeup,
+                                listings: listingsByProduct.get(item.id) ?? [],
+                            };
+                        })
+                        .filter((product) => product.listings.length > 0)
                 );
 
                 setStores(
